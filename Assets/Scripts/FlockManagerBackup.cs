@@ -273,7 +273,7 @@ public class FlockManagerBackup : MonoBehaviour
 				}
 			}
 			//Debug.Log("Node " + wantedNodes[i] + " is " + colors[i]);
-			nodeList[wantedNodes[i]].renderer.material.color = colors[i];
+			nodeList[wantedNodes[i]].GetComponent<Renderer>().material.color = colors[i];
 
 			//Debug.Log(wantedNodes[i] + " is passable");
 

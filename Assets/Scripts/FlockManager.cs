@@ -50,6 +50,10 @@ public class FlockManager : MonoBehaviour
 	private List<GameObject> flockers = new List<GameObject>();
 	public List<GameObject> Flockers {get{return flockers;}}
 
+	public GameObject nodeParent;
+	public GameObject blockParent;
+	public GameObject flockerParent;
+
 	// array of obstacles with accessor
 	private  GameObject[] obstacles;
 	public GameObject[] Obstacles {get{return obstacles;}}
@@ -60,7 +64,7 @@ public class FlockManager : MonoBehaviour
 	
 	public void Start ()
 	{
-		setUpNodes();
+		SetUpNodes();
 		//construct our 2d array based on the value set in the editor
 		distances = new float[numberOfFlockers, numberOfFlockers];
 	
@@ -74,14 +78,20 @@ public class FlockManager : MonoBehaviour
 		Flocking flocker; // reference to flocker scripts
 		for (int i = 0; i < newFlockerCount; i++)
 		{
+			Vector3 randomNodePos = NodeList[Random.Range(0, nodeList.Count)].transform.position + Vector3.up * 8;
+
 			//Instantiate, set its variables.
-			flockers.Add((GameObject)Instantiate(flockerPrefab, new Vector3(transform.position.x + 10 + i, 5, transform.position.z + i * 1.2f), Quaternion.identity));
+			flockers.Add((GameObject)Instantiate(flockerPrefab, randomNodePos, Quaternion.identity));			
+				
+			//flockers.Add((GameObject)Instantiate(flockerPrefab, new Vector3(transform.position.x + 10 + i * 2f, 10, transform.position.z + i * 2f), Quaternion.identity));
 			//grab a component reference
 			flocker = flockers[i].GetComponent<Flocking>();
 			flockers[i].GetComponent<Steering>().maxSpeed = flockerMaxSpeed;
 			//set values in the Vehicle script
 			flocker.Index = i;
 			flocker.setFlockManager(Centroid);
+
+			flocker.transform.SetParent(flockerParent.transform);
 		}
 
 		distances = new float[flockers.Count, flockers.Count];
@@ -90,7 +100,9 @@ public class FlockManager : MonoBehaviour
 
 	public void AddFlocker()
 	{
-		GameObject flockerGO = (GameObject)Instantiate(flockerPrefab, new Vector3(transform.position.x + 10, 5, transform.position.z), Quaternion.identity);
+		Vector3 randomNodePos = NodeList[Random.Range(0, nodeList.Count)].transform.position + Vector3.up * 8;
+
+		GameObject flockerGO = (GameObject)Instantiate(flockerPrefab, randomNodePos, Quaternion.identity);
 		//grab a component reference
 		Flocking flocker = flockerGO.GetComponent<Flocking>();
 		flockerGO.GetComponent<Steering>().maxSpeed = flockerMaxSpeed;
@@ -98,6 +110,8 @@ public class FlockManager : MonoBehaviour
 		flocker.Index = flockers.Count;
 		flocker.setFlockManager(Centroid);
 		flockers.Add(flockerGO);
+
+		flocker.transform.SetParent(flockerParent.transform);
 
 		distances = new float[flockers.Count, flockers.Count];
 		calcDistances();
@@ -138,7 +152,7 @@ public class FlockManager : MonoBehaviour
 				}
 			}
 			//Debug.Log("Node " + wantedNodes[i] + " is " + colors[i]);
-			nodeList[wantedNodes[i]].renderer.material.color = colors[i];
+			nodeList[wantedNodes[i]].GetComponent<Renderer>().material.color = colors[i];
 
 			//None can be terrain as well.
 			//Debug.Log(wantedNodes[i] + " is passable");
@@ -152,7 +166,7 @@ public class FlockManager : MonoBehaviour
 	{
 		for (int i = 0; i < wantedNodes.Length; i++)
 		{
-			nodeList[wantedNodes[i]].renderer.material.color = new Color( .75f, .75f, .75f );
+			nodeList[wantedNodes[i]].GetComponent<Renderer>().material.color = new Color( .75f, .75f, .75f );
 		}
 	}
 
@@ -182,7 +196,7 @@ public class FlockManager : MonoBehaviour
 		}
 	}
 
-	public void setUpNodes()
+	public void SetUpNodes()
 	{
 		maxPaths = nodeGridSize * 2;
 
@@ -197,7 +211,9 @@ public class FlockManager : MonoBehaviour
 				node = NodeList[(i * nodeGridSize) + (j)].GetComponent<PathNode>();
 				//Set the  node's index and manager
 				node.nodeIndex = (i * nodeGridSize) + (j);
-				
+
+				node.transform.SetParent(nodeParent.transform);
+
 				node.setNodeManager(Centroid);
 
 				#region Top

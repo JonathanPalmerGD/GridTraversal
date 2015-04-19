@@ -59,7 +59,7 @@ public class Flocking : MonoBehaviour
 	{
 		currentPath = new Stack<int>();
 		head = ((GameObject)Instantiate(headPrefab, new Vector3(transform.position.x, transform.position.y+1, transform.position.z), Quaternion.identity));
-
+		head.transform.SetParent(this.transform);
 		
 		//get component reference
 		characterController = gameObject.GetComponent<CharacterController> ();
@@ -100,8 +100,8 @@ public class Flocking : MonoBehaviour
 		wantQueue.Enqueue(newWant);
 		currentDesire = newWant;
 
-		head.renderer.material.color = flockManager.GetFlockerColor(currentDesire);
-		renderer.material.color = flockManager.GetFlockerColor(currentDesire);
+		head.GetComponent<Renderer>().material.color = flockManager.GetFlockerColor(currentDesire);
+		GetComponent<Renderer>().material.color = flockManager.GetFlockerColor(currentDesire);
 	}
 
 	public void UpdateWants(bool newFrame)
@@ -109,8 +109,8 @@ public class Flocking : MonoBehaviour
 		currentDesire = wantQueue.Peek();
 
 		//Body and head coloring for visibility
-		head.renderer.material.color = flockManager.GetFlockerColor(currentDesire);
-		renderer.material.color = flockManager.GetFlockerColor(currentDesire);
+		head.GetComponent<Renderer>().material.color = flockManager.GetFlockerColor(currentDesire);
+		GetComponent<Renderer>().material.color = flockManager.GetFlockerColor(currentDesire);
 	}
 
 	// get a reference to the manager's FlockManager component (script)
@@ -136,7 +136,7 @@ public class Flocking : MonoBehaviour
 		if (Vector3.Distance(transform.position, flockManager.centroid.transform.position) > flockManager.tightDist)
 		{
 			//We're too far away, show it!
-			renderer.material.color = Color.blue;
+			GetComponent<Renderer>().material.color = Color.blue;
 			return steerer.Seek(flockManager.Centroid);
 		}
 		else
@@ -163,7 +163,7 @@ public class Flocking : MonoBehaviour
 			{
 				Debug.DrawLine(transform.position, flockManager.Flockers[i].transform.position, Color.magenta, .5f);
 				//Say that we're spacing ourselves from others
-				renderer.material.color = Color.red;
+				GetComponent<Renderer>().material.color = Color.red;
 				return steerer.Flee(flockManager.Flockers[i]);
 			}
 		}
@@ -207,8 +207,8 @@ public class Flocking : MonoBehaviour
 		//First time of the frame we want to update our wants and call aStar if needed.
 		UpdateWants(true);
 
-		head.renderer.material.color = flockManager.GetFlockerColor(currentDesire);
-		renderer.material.color = flockManager.GetFlockerColor(currentDesire);
+		head.GetComponent<Renderer>().material.color = flockManager.GetFlockerColor(currentDesire);
+		GetComponent<Renderer>().material.color = flockManager.GetFlockerColor(currentDesire);
 
 		//These are important
 		CalcSteeringForce ();
@@ -243,8 +243,8 @@ public class Flocking : MonoBehaviour
 		if (head != null)
 		{
 			//Update body and head color.
-			renderer.material.color = flockManager.GetFlockerColor(currentDesire);
-			head.renderer.material.color = flockManager.GetFlockerColor(currentDesire);
+			GetComponent<Renderer>().material.color = flockManager.GetFlockerColor(currentDesire);
+			head.GetComponent<Renderer>().material.color = flockManager.GetFlockerColor(currentDesire);
 			head.transform.position = new Vector3(transform.position.x, transform.position.y + 1.3f, transform.position.z);
 		}
 
@@ -334,9 +334,9 @@ public class Flocking : MonoBehaviour
 		//ps.renderer.material.color = colorOfSegment;
 
 		pathSegments.Add((GameObject)Instantiate(pathSegment, positionOfSegment, Quaternion.identity));
-		PathSegments[PathSegments.Count - 1].renderer.material.color = colorOfSegment;
-		PathSegments[PathSegments.Count - 1].renderer.transform.rotation = Quaternion.identity;
-		PathSegments[PathSegments.Count - 1].renderer.transform.RotateAround(Vector3.up, angle);
+		PathSegments[PathSegments.Count - 1].GetComponent<Renderer>().material.color = colorOfSegment;
+		PathSegments[PathSegments.Count - 1].GetComponent<Renderer>().transform.rotation = Quaternion.identity;
+		PathSegments[PathSegments.Count - 1].GetComponent<Renderer>().transform.RotateAround(Vector3.up, angle);
 	
  	}
 

@@ -67,7 +67,7 @@ public class Vehicle : MonoBehaviour
 		cummulativeRotation = 0.0f;
 		
 		//half the height of vehicle bounding box
-		halfHeight = renderer.bounds.extents.y;
+		halfHeight = GetComponent<Renderer>().bounds.extents.y;
 	}
 
 	// Update is called once per frame
